@@ -75,7 +75,11 @@ for(const b of calcOperations)
       holdSecondOp = b.innerHTML;
       if(firstOperation === true)
       {
-         handleOperation();
+         let stat = handleOperation();
+         if(stat == -1) 
+         {
+          return;
+         }
          workingEquation += holdSecondOp;
          equation += ` ${holdSecondOp} `;
          display.innerHTML = equation;
@@ -117,8 +121,17 @@ function handleOperation()
 
   n1 = Number(workingEquation.substring(0, index));
   n2 = Number(workingEquation.substring(index+1));
-
-  n1 = operate(n1, n2, operator).toFixed(2);
+  if(operator === "÷" && n2 === 0)
+  {
+    display.textContent = "Division By Zero Illegal";
+    return -1;
+  }
+  n1 = operate(n1, n2, operator);
+  if(!Number.isInteger(n1))
+  {
+    // true case do nothing
+    n1 = n1.toFixed(2);
+  }
   let upperDisplay = `${equation} =`;
   workingEquation = n1.toString();
   equation = n1.toString();
@@ -141,6 +154,7 @@ clearButton.addEventListener('click', () => {
   workingEquation = "0";
   equation = "0";
   firstOperation = false;
+  upper.innerHTML = "";
   display.innerHTML = equation;
 })
 
@@ -152,3 +166,23 @@ deleteButton.addEventListener('click', () => {
   equation = equation.slice(0, -1);
   display.innerHTML = workingEquation;
 })
+
+document.addEventListener('keydown', function(event) {
+  let key = event.key;
+  let num = Number(key);
+  // try numbers
+  if(num >= 0 && num <= 9)
+  {
+    if(display.innerHTML === "0")
+      {
+        equation = num;
+        workingEquation = num;
+        display.innerHTML = equation;
+        return;
+      }
+      equation += num
+      workingEquation += num;
+      display.innerHTML = equation;
+  }
+  // try symbol
+});

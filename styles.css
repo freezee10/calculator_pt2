@@ -25,9 +25,13 @@ button {
 }
 
 button:hover {
-  transition: 0.5s;
+  transition: 0.1s;
 
   opacity: 0.8;
+}
+
+button:active {
+  opacity: 0.4;
 }
 
 .num-row {
@@ -59,6 +63,8 @@ button:hover {
   margin-bottom: 20px;
   
 }
+
+
 
 .display {
   height: 64px;
