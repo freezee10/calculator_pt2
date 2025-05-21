@@ -47,7 +47,8 @@ let equation = "";
 let workingEquation = "";
 let display = document.querySelector('.answer')
 let answer;
-
+let firstOperation = false;
+let holdSecondOp;
 
 
 let calcNums = document.querySelectorAll('.calc-num');
@@ -64,15 +65,26 @@ let calcOperations = document.querySelectorAll('.calc-operator');
 for(const b of calcOperations)
   {
     b.addEventListener('click', () => {
+      holdSecondOp = b.innerHTML;
+      if(firstOperation === true)
+      {
+         handleOperation();
+         workingEquation += holdSecondOp;
+         equation += ` ${holdSecondOp} `;
+         display.innerHTML = equation;
+         return;
+      }
       equation += ` ${b.innerHTML} `;
       workingEquation += b.innerHTML;
       display.innerHTML = equation;
+      firstOperation = true;
     })
   }
 
 function handleOperation() 
 {
   // equals
+
   let index;
   if(workingEquation.indexOf("+") != -1)
   {
@@ -100,6 +112,7 @@ function handleOperation()
   n2 = Number(workingEquation.substring(index+1));
 
   n1 = operate(n1, n2, operator);
+
   workingEquation = n1.toString();
   equation = n1.toString();
   display.innerHTML = equation;
@@ -107,5 +120,11 @@ function handleOperation()
   
 }
 
+function equals()
+{
+  firstOperation = false;
+  handleOperation();
+}
+
 let equalsButton = document.querySelector('.calc-equals');
-equalsButton.addEventListener('click', handleOperation);
+equalsButton.addEventListener('click', equals);
