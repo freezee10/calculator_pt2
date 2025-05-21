@@ -50,11 +50,18 @@ let answer;
 let firstOperation = false;
 let holdSecondOp;
 
-
+let upper = document.querySelector('.equation');
 let calcNums = document.querySelectorAll('.calc-num');
 for(const b of calcNums)
 {
   b.addEventListener('click', () => {
+    if(display.innerHTML === "0")
+    {
+      equation = b.innerHTML;
+      workingEquation = b.innerHTML;
+      display.innerHTML = equation;
+      return;
+    }
     equation += b.innerHTML;
     workingEquation += b.innerHTML;
     display.innerHTML = equation;
@@ -111,12 +118,12 @@ function handleOperation()
   n1 = Number(workingEquation.substring(0, index));
   n2 = Number(workingEquation.substring(index+1));
 
-  n1 = operate(n1, n2, operator);
-
+  n1 = operate(n1, n2, operator).toFixed(2);
+  let upperDisplay = `${equation} =`;
   workingEquation = n1.toString();
   equation = n1.toString();
   display.innerHTML = equation;
-
+  upper.innerHTML = upperDisplay;
   
 }
 
@@ -128,3 +135,20 @@ function equals()
 
 let equalsButton = document.querySelector('.calc-equals');
 equalsButton.addEventListener('click', equals);
+
+let clearButton = document.querySelector(".clear-button");
+clearButton.addEventListener('click', () => {
+  workingEquation = "0";
+  equation = "0";
+  firstOperation = false;
+  display.innerHTML = equation;
+})
+
+let deleteButton = document.querySelector('.delete-button');
+deleteButton.addEventListener('click', () => {
+  let last = workingEquation[workingEquation.length - 1];
+  
+  workingEquation = workingEquation.slice(0, -1);
+  equation = equation.slice(0, -1);
+  display.innerHTML = workingEquation;
+})

@@ -1,17 +1,27 @@
+@font-face {
+  font-family: calc_font;
+  src: url(digital-7.ttf);
+}
+
 * {
   box-sizing: border-box;
-}
-.calculator-main {
-  border: solid black 1px;
-  
+  color: white;
+  font-family: calc_font;
 
-  border-radius: 5px;
+}
+
+
+.calculator-main {
+  border: solid #91A6FF 1px;
+  background-color: #564787;
+
+  border-radius: 10px;
 }
 
 button {
   border-radius: 4px;
   cursor: pointer;
-  background-color: rgb(214, 214, 214);
+  background-color: #91A6FF;
 }
 
 button:hover {
@@ -29,7 +39,7 @@ button:hover {
 .num-row button {
   padding: 20px 30px;
   border: solid black 1px;
-  color: black;
+  color: white;
   cursor: pointer;
   font-size: 20px;
   flex: 1;
@@ -60,15 +70,42 @@ button:hover {
 }
 
 .display {
-  border: solid black 1px;
+  border: solid #91A6FF 1px;
+  height: 115px;
   margin-bottom: 20px;
   display: flex;
-  justify-content: end;
-  align-items: center;
+  flex-direction: column;
+  align-items: end;
+
+
 }
 
 .calculator-outer {
   display: flex;
   justify-content: center;
   margin-top: 10%;
+}
+.col-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.equation {
+  margin-top: 10px;
+  justify-self: start;
+  font-size: 20px;
+}
+
+.answer {
+  font-size: 35px;
+  justify-self: center;
+  margin-top: 25px;
+}
+
+.clear-button {
+  background-color: #FF5154;
+}
+
+.delete-button {
+  background-color: #00aeab;
 }
