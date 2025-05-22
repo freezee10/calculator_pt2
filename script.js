@@ -73,6 +73,11 @@ for(const b of calcOperations)
       holdSecondOp = b.innerHTML;
       if(firstOperation === true)
       {
+        let last = workingEquation[workingEquation.length - 1];
+        if(last === "+" || last === "-" || last === "x" || last === "÷")
+        {
+          return;
+        }
          let stat = handleOperation();
          if(stat == -1) 
          {
