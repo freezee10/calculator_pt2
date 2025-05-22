@@ -38,20 +38,18 @@ function operate(n1, n2, operator)
   }
 
 }
+
 let n1, n2, operator;
 
-n1 = 23;
-n2 = 5;
-operator = "/";
 let equation = "";
 let workingEquation = "";
 let display = document.querySelector('.answer')
-let answer;
 let firstOperation = false;
 let holdSecondOp;
 
 let upper = document.querySelector('.equation');
 let calcNums = document.querySelectorAll('.calc-num');
+
 for(const b of calcNums)
 {
   b.addEventListener('click', () => {
@@ -142,6 +140,15 @@ function handleOperation()
 
 function equals()
 {
+  if(equation.indexOf("+") === -1 && equation.indexOf("-") === -1 && equation.indexOf("x") === -1 && equation.indexOf("÷") === -1)
+  {
+    return;
+  }
+  let last = workingEquation[workingEquation.length - 1];
+  if(last === "+" || last === "-" || last === "x" || last === "÷")
+  {
+    return;
+  }
   firstOperation = false;
   handleOperation();
 }
@@ -162,9 +169,20 @@ let deleteButton = document.querySelector('.delete-button');
 deleteButton.addEventListener('click', () => {
   let last = workingEquation[workingEquation.length - 1];
   
+  // if last is an operator
+  if(last === "+" || last === "-" || last === "x" || last === "÷")
+  {
+    workingEquation = workingEquation.slice(0, -1);
+    equation = equation.slice(0, -3);
+   
+    display.innerHTML = equation;
+    firstOperation = false;
+    return;
+  }
+  
   workingEquation = workingEquation.slice(0, -1);
   equation = equation.slice(0, -1);
-  display.innerHTML = workingEquation;
+  display.innerHTML = equation;
 })
 
 document.addEventListener('keydown', function(event) {
@@ -186,3 +204,9 @@ document.addEventListener('keydown', function(event) {
   }
   // try symbol
 });
+
+document.querySelector('.calc-decimal').addEventListener('click', () => {
+  equation += '.';
+  workingEquation += '.';
+  display.innerHTML = equation;
+})
