@@ -76,6 +76,11 @@ for(const b of calcOperations)
         let last = workingEquation[workingEquation.length - 1];
         if(last === "+" || last === "-" || last === "x" || last === "÷")
         {
+          workingEquation = workingEquation.slice(0, -1);
+          equation = equation.slice(0, -3);
+          workingEquation += b.innerHTML;
+          equation += ` ${b.innerHTML} `;
+          display.innerHTML = equation;
           return;
         }
          let stat = handleOperation();
