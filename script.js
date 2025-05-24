@@ -164,7 +164,7 @@ document.addEventListener('keydown', function(event) {
   // try numbers
   if(num >= 0 && num <= 9)
   {
-    updateNums(num);
+    updateNums(key);
     return;
   }
   // try symbol
