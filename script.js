@@ -46,23 +46,14 @@ let workingEquation = "";
 let display = document.querySelector('.answer')
 let firstOperation = false;
 let holdSecondOp;
-
+let freshEquals = false;
 let upper = document.querySelector('.equation');
 let calcNums = document.querySelectorAll('.calc-num');
 
 for(const b of calcNums)
 {
   b.addEventListener('click', () => {
-    if(display.innerHTML === "0")
-    {
-      equation = b.innerHTML;
-      workingEquation = b.innerHTML;
-      display.innerHTML = equation;
-      return;
-    }
-    equation += b.innerHTML;
-    workingEquation += b.innerHTML;
-    display.innerHTML = equation;
+    updateNums(b.innerHTML);
   })
 }
 
@@ -70,33 +61,8 @@ let calcOperations = document.querySelectorAll('.calc-operator');
 for(const b of calcOperations)
   {
     b.addEventListener('click', () => {
-      holdSecondOp = b.innerHTML;
-      if(firstOperation === true)
-      {
-        let last = workingEquation[workingEquation.length - 1];
-        if(last === "+" || last === "-" || last === "x" || last === "÷")
-        {
-          workingEquation = workingEquation.slice(0, -1);
-          equation = equation.slice(0, -3);
-          workingEquation += b.innerHTML;
-          equation += ` ${b.innerHTML} `;
-          display.innerHTML = equation;
-          return;
-        }
-         let stat = handleOperation();
-         if(stat == -1) 
-         {
-          return;
-         }
-         workingEquation += holdSecondOp;
-         equation += ` ${holdSecondOp} `;
-         display.innerHTML = equation;
-         return;
-      }
-      equation += ` ${b.innerHTML} `;
-      workingEquation += b.innerHTML;
-      display.innerHTML = equation;
-      firstOperation = true;
+      freshEquals = false;
+      updateOperation(b.innerHTML);
     })
   }
 
@@ -105,25 +71,33 @@ function handleOperation()
   // equals
 
   let index;
-  if(workingEquation.indexOf("+") != -1)
-  {
-    index = workingEquation.indexOf("+");
-    operator = workingEquation[index];
-
-  } 
-  else if(workingEquation.indexOf("-") != -1)
-  {
-    index = workingEquation.indexOf("-");
-    operator = workingEquation[index];
-  }
-  else if(workingEquation.indexOf("x") != -1)
+  if(workingEquation.indexOf("x") != -1)
   {
     index = workingEquation.indexOf("x");
     operator = workingEquation[index];
-  }
+
+  } 
   else if(workingEquation.indexOf("÷") != -1)
   {
     index = workingEquation.indexOf("÷");
+    operator = workingEquation[index];
+  }
+  else if(workingEquation.indexOf("+") != -1)
+  {
+    index = workingEquation.indexOf("+");
+    operator = workingEquation[index];
+  }
+  else if(workingEquation.indexOf("-") != -1)
+  {
+    // check inner
+    index = workingEquation.indexOf("-");
+    let testTwoString = workingEquation.substring(index+1);
+    let testIndex = testTwoString.indexOf("-");
+    if(testIndex != -1)
+    {
+      operator = workingEquation[index];
+      index = testIndex + 1;
+    }
     operator = workingEquation[index];
   }
 
@@ -150,6 +124,7 @@ function handleOperation()
 
 function equals()
 {
+  freshEquals = true;
   if(equation.indexOf("+") === -1 && equation.indexOf("-") === -1 && equation.indexOf("x") === -1 && equation.indexOf("÷") === -1)
   {
     return;
@@ -173,10 +148,120 @@ clearButton.addEventListener('click', () => {
   firstOperation = false;
   upper.innerHTML = "";
   display.innerHTML = equation;
+  freshEquals = false;
 })
 
 let deleteButton = document.querySelector('.delete-button');
 deleteButton.addEventListener('click', () => {
+  updateDelete();
+})
+
+
+
+document.addEventListener('keydown', function(event) {
+  let key = event.key;
+  let num = Number(key);
+  // try numbers
+  if(num >= 0 && num <= 9)
+  {
+    updateNums(num);
+    return;
+  }
+  // try symbol
+
+  if(key === "+" || key === "-" || key === "x" || key === "/" )
+  {
+    if(key === "/")
+    {
+      key = "÷";
+    }
+    freshEquals = false;
+    updateOperation(key);
+    return;
+  }
+
+  if(key === "Enter")
+  {
+    equals();
+    return;
+  }
+
+  if(key === "Backspace")
+  {
+    updateDelete();
+    return;
+  }
+});
+
+document.querySelector('.calc-decimal').addEventListener('click', () => {
+  // safety checks first
+  if(workingEquation.indexOf(".") === -1)
+  {
+    equation += '.';
+    workingEquation += '.';
+    display.innerHTML = equation;
+  }
+ 
+})
+
+function updateOperation(key)
+{
+  holdSecondOp = key;
+  if(firstOperation === true)
+  {
+    let last = workingEquation[workingEquation.length - 1];
+    if(last === "+" || last === "-" || last === "x" || last === "÷")
+    {
+      workingEquation = workingEquation.slice(0, -1);
+      equation = equation.slice(0, -3);
+      workingEquation += key;
+      equation += ` ${key} `;
+      display.innerHTML = equation;
+      return;
+    }
+     let stat = handleOperation();
+     if(stat == -1) 
+     {
+      return;
+     }
+     workingEquation += holdSecondOp;
+     equation += ` ${holdSecondOp} `;
+     display.innerHTML = equation;
+     return;
+  }
+  equation += ` ${key} `;
+  workingEquation += key;
+  display.innerHTML = equation;
+  firstOperation = true;
+}
+
+function updateNums(key)
+{
+  if(freshEquals)
+    {
+      // decide whether to go with the replacement OR if operator input 
+      equation = key;
+      workingEquation = key;
+      display.innerHTML = equation;
+      freshEquals = false;
+      upper.innerHTML = "";
+      return;
+
+    }
+    if(display.innerHTML === "0")
+    {
+      equation = key;
+      workingEquation = key;
+      display.innerHTML = equation;
+      return;
+    }
+    equation += key;
+    workingEquation += key;
+    display.innerHTML = equation;
+}
+
+function updateDelete()
+{
   let last = workingEquation[workingEquation.length - 1];
   
   // if last is an operator
@@ -193,30 +278,4 @@ deleteButton.addEventListener('click', () => {
   workingEquation = workingEquation.slice(0, -1);
   equation = equation.slice(0, -1);
   display.innerHTML = equation;
-})
-
-document.addEventListener('keydown', function(event) {
-  let key = event.key;
-  let num = Number(key);
-  // try numbers
-  if(num >= 0 && num <= 9)
-  {
-    if(display.innerHTML === "0")
-      {
-        equation = num;
-        workingEquation = num;
-        display.innerHTML = equation;
-        return;
-      }
-      equation += num
-      workingEquation += num;
-      display.innerHTML = equation;
-  }
-  // try symbol
-});
-
-document.querySelector('.calc-decimal').addEventListener('click', () => {
-  equation += '.';
-  workingEquation += '.';
-  display.innerHTML = equation;
-})
+}
